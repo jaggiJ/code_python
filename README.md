@@ -9,7 +9,11 @@ $ python server_health.py &
 
 SUGGESTED EDITs:
 1. Change server address in 'def estimate_status():'
-2. Change time of requests in seconds at 'time.sleep(300)'
+2. Change time of requests in seconds at 'time.sleep(300)' ( change to 6 for initial testing )
 
+EXAMPLE OF LOG FILE ENTRIES
+2021-05-30 18:35:38.196089 status code: 200
+2021-05-30 18:37:30.038671 status code: 200
+2021-05-30 18:39:42.655819 status code: server error
 ################################################################################################
  
