@@ -1,8 +1,6 @@
 # SERVER HEALTH STATUS LOGGER
 # jaggiJ 2021
 
-# TODO This throws error when server is stopped, put that situation into log too
-
 # Checks server response status periodically, logs each non '200'
 # Responses that are '200' or server error are logged less frequently to prevent spam
 
