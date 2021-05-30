@@ -29,6 +29,7 @@ def estimate_status():
 # initial log entry
 req, code = estimate_status()
 append_status()
+print(f'Initial status code {code}, request: {req}')
 
 counter = 0
 while True:
@@ -43,6 +44,6 @@ while True:
     else:
         if counter % 6 == 0:
             append_status()
-    print(code, req)
+    
 
     time.sleep(300)
