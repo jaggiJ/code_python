@@ -1,8 +1,16 @@
-# SERVER HEALTH STATUS LOGGER
+# WEB-SERVER RESPONSE STATUS LOGGER
 # jaggiJ 2021
 
 # Checks server response status periodically, logs each non '200'
 # Responses that are '200' or server error are logged less frequently to prevent spam
+
+#TODO:
+#   change log file to health.log to ease bash navigation
+#   handle lack of python3 and request module in default CentOS (automate venv ?)
+#   clean code at estimate_status() to eliminate redundancy
+#   create sys.args to run command in testing mode and server address
+#   create user edits section on top with server and time address
+#   add use case, dependency and design principle to readme
 
 import requests
 import time, datetime
