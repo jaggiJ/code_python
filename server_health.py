@@ -1,57 +1,100 @@
 # WEB-SERVER RESPONSE STATUS LOGGER
 # jaggiJ 2021
 
-# Checks server response status periodically, logs each non '200'
-# Responses that are '200' or server error are logged less frequently to prevent spam
+# Checks server response status each 5min by default settings and
+# logs response code into file. Normal response (200) and connection 
+# problems are logged less frequently to prevent spam in log file
 
-#TODO:
-#   change log file to health.log to ease bash navigation
-#   handle lack of python3 and request module in default CentOS (automate venv ?)
-#   clean code at estimate_status() to eliminate redundancy
-#   create sys.args to run command in testing mode and server address
-#   create user edits section on top with server and time address
-#   add use case, dependency and design principle to readme
+# example: 
+#       default setting 300 will check server each 5 min and append 
+#       result to log. Exceptions: '200' code result - each 30 min,
+#       connection error - each 10 min.
 
-import requests
+# USE:  'python[3] SCRIPT-NAME [SERVER-ADDRESS] [REQUEST-TIME-IN-SECONDS]'
+#   e.g.'python3 res-logger.py https://google.com 6'
+
+import requests, sys
 import time, datetime
 
-# appends server response status to log
+#######################################################################
+# SERVER AND REQUESTS TIME CONFIGURATION
+# COMMAND LINE ARGUMENTS, IF PROVIDED OVERWRITE THIS
+server = 'https://server.address.here.com'
+requestFrequency = 300
+
+########################################################################
+#FUNCTIONS
 def append_status():
+    # appends server response status to log
     res_msg = f'{str(datetime.datetime.now())} status code: {code}\n'
-    with open('server_health_log.txt', 'a') as file:
+    with open('status.log', 'a') as file:
         file.write(res_msg)
 
 def estimate_status():
+    # figures out server response code e.g. 200
     try:
-        req = requests.get('https://wypas.online')
-        
+        req = requests.get(server)
     except:
-        req = 'server error'
+        req = 'no connection to server'
 
     if isinstance(req, str):
-        code = 'server error'
+        code = 'no connection to server'
+        # code = 201 #debug
     else:
         code = req.status_code
     return req, code
 
-# initial log entry
+def help_text():
+    #prints out help to user
+    print(
+'Add one or two arguments:\n1. server address starting with http\
+or https,\n2. time in seconds (default is 300), e.g\n"python3 \
+res-logger.py https://google.com 6"')
+    sys.exit()
+
+##########################################################################
+#COMMAND LINE ARGUMENTS
+commandLineArgs = sys.argv[1::]
+if commandLineArgs:
+# checks if user provided proper command line arguments, if not prints out help
+    if commandLineArgs[0].startswith('http') and commandLineArgs[1]:
+        server = commandLineArgs[0]
+        requestFrequency = int(commandLineArgs[1])
+    elif commandLineArgs[0].startswith('http') and commandLineArgs == 1:
+        server = commandLineArgs[0]
+    else:
+        help_text()
+
+elif not commandLineArgs and server == 'https://server.address.here.com':
+    help_text()   
+
+#########################################################################
+#OTHER VARIABLES
 req, code = estimate_status()
 append_status()
 print(f'Initial status code {code}, request: {req}')
 
+###############################################################
+#MAIN LOOP
 counter = 0
 while True:
+    #sends requests and logs responses to file
+    
     counter += 1
     req, code = estimate_status()
     
-    if code != 200:
+    if code != 200 and not isinstance(code, str):
+        print('1 is case') #debug
         append_status() 
     elif isinstance(code, str):
+        #decrease frequency of connection error log
+        print('2 is case') #debug
         if counter % 2 == 0:
             append_status()
     else:
+        #decrease frequency of logging code status 200
+        print('3 is case') #debug
         if counter % 6 == 0:
             append_status()
-    
 
-    time.sleep(300)
+    time.sleep(requestFrequency)
