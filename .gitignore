@@ -3,6 +3,7 @@ todo
 workspace.code-workspace
 test.py
 alt/
+Pipfile*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
