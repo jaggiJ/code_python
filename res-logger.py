@@ -84,16 +84,16 @@ while True:
     req, code = estimate_status()
     
     if code != 200 and not isinstance(code, str):
-        print('1 is case') #debug
+#         print('1 is case') #debug
         append_status() 
     elif isinstance(code, str):
         #decrease frequency of connection error log
-        print('2 is case') #debug
+#         print('2 is case') #debug
         if counter % 2 == 0:
             append_status()
     else:
         #decrease frequency of logging code status 200
-        print('3 is case') #debug
+#         print('3 is case') #debug
         if counter % 6 == 0:
             append_status()
 
