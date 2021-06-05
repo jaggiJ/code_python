@@ -1,5 +1,6 @@
 # WEB-SERVER RESPONSE STATUS LOGGER
-# jaggiJ 2021
+# MIT License
+# Copyright (c) 2021 jaggiJ
 
 # Checks server response status each 5min by default settings and
 # logs response code into file. Normal response (200) and connection 
@@ -25,13 +26,13 @@ requestFrequency = 300
 ########################################################################
 #FUNCTIONS
 def append_status():
-    # appends server response status to log
+    '''Appends server response status to log.'''
     res_msg = f'{str(datetime.datetime.now())} status code: {code}\n'
     with open('status.log', 'a') as file:
         file.write(res_msg)
 
 def estimate_status():
-    # figures out server response code e.g. 200
+    '''Figures out server response code e.g. 200.'''
     try:
         req = requests.get(server)
     except:
@@ -45,7 +46,7 @@ def estimate_status():
     return req, code
 
 def help_text():
-    #prints out help to user
+    '''Prints out help to user.'''
     print(
 'Add one or two arguments:\n1. server address starting with http\
 or https,\n2. time in seconds (default is 300), e.g\n"python3 \
@@ -56,7 +57,8 @@ res-logger.py https://google.com 6"')
 #COMMAND LINE ARGUMENTS
 commandLineArgs = sys.argv[1::]
 if commandLineArgs:
-# checks if user provided proper command line arguments, if not prints out help
+    #Checks if user provided proper command line arguments; if not 
+    #prints out help.
     if commandLineArgs[0].startswith('http') and commandLineArgs[1]:
         server = commandLineArgs[0]
         requestFrequency = int(commandLineArgs[1])
@@ -78,7 +80,7 @@ print(f'Initial status code {code}, request: {req}')
 #MAIN LOOP
 counter = 0
 while True:
-    #sends requests and logs responses to file
+    #Sends requests and logs responses to file.
     
     counter += 1
     req, code = estimate_status()
@@ -87,12 +89,12 @@ while True:
 #         print('1 is case') #debug
         append_status() 
     elif isinstance(code, str):
-        #decrease frequency of connection error log
+        #Decrease frequency of connection error log.
 #         print('2 is case') #debug
         if counter % 2 == 0:
             append_status()
     else:
-        #decrease frequency of logging code status 200
+        #Decrease frequency of logging code status 200.
 #         print('3 is case') #debug
         if counter % 6 == 0:
             append_status()
