@@ -20,14 +20,18 @@ import time, datetime
 #######################################################################
 # SERVER AND REQUESTS TIME CONFIGURATION
 # COMMAND LINE ARGUMENTS, IF PROVIDED OVERWRITE THIS
-server = 'https://server.address.here.com'
-requestFrequency = 300
+# server = 'https://server.address.here.com'
+# requestFrequency = 300
+server = 'https://wypas.online'
+requestFrequency = 6
 
 ########################################################################
 #FUNCTIONS
 def append_status():
     '''Appends server response status to log.'''
-    res_msg = f'{str(datetime.datetime.now())} status code: {code}\n'
+    timeNow = datetime.datetime.now()
+    formatTimeNow = timeNow.strftime("%d/%m/%Y, %H:%M:%S")
+    res_msg = f'{formatTimeNow} status code: {code}\n'
     with open('status.log', 'a') as file:
         file.write(res_msg)
 
@@ -70,12 +74,12 @@ if commandLineArgs:
 elif not commandLineArgs and server == 'https://server.address.here.com':
     help_text()   
 
-#########################################################################
+###############################################################################
 #OTHER VARIABLES
 req, code = estimate_status()
 append_status()
 print(f'Initial status code {code}, request: {req}')
-
+lessFrequent = 6
 ###############################################################
 #MAIN LOOP
 counter = 0
@@ -83,20 +87,14 @@ while True:
     #Sends requests and logs responses to file.
     
     counter += 1
+    previous_status = code
     req, code = estimate_status()
     
-    if code != 200 and not isinstance(code, str):
-#         print('1 is case') #debug
+    if code != previous_status:
         append_status() 
-    elif isinstance(code, str):
-        #Decrease frequency of connection error log.
-#         print('2 is case') #debug
-        if counter % 2 == 0:
-            append_status()
     else:
-        #Decrease frequency of logging code status 200.
-#         print('3 is case') #debug
-        if counter % 6 == 0:
+        #Decrease frequency of logging same status by calm_factor       
+        if counter % lessFrequent == 0:
             append_status()
 
     time.sleep(requestFrequency)
