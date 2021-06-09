@@ -2,17 +2,14 @@
 # MIT License
 # Copyright (c) 2021 jaggiJ
 
-# Checks server response status each 5min by default settings and
-# logs response code into file. Normal response (200) and connection 
-# problems are logged less frequently to prevent spam in log file
+# Checks and logs server response status 
 
-# example: 
-#       default setting 300 will check server each 5 min and append 
-#       result to log. Exceptions: '200' code result - each 30 min,
-#       connection error - each 10 min.
-
-# USE:  'python[3] SCRIPT-NAME [SERVER-ADDRESS] [REQUEST-TIME-IN-SECONDS]'
-#   e.g.'python3 res-logger.py https://google.com 6'
+# USE:  'python[3] res-logger.py <server-address> <request time seconds>'
+#   for testing:
+#       'python3 res-logger.py https://google.com 6'
+#       'tail -F status.log'
+#   example for permanent run in background:
+#       'python3 res-logger.py https://google.com 300 &'
 
 import requests, sys
 import time, datetime
@@ -77,10 +74,12 @@ elif not commandLineArgs and server == 'https://server.address.here.com':
 ###############################################################################
 #OTHER VARIABLES
 req, code = estimate_status()
+lessFrequent = 6
+
+###############################################################
 append_status()
 print(f'Initial status code {code}, request: {req}')
-lessFrequent = 6
-###############################################################
+
 #MAIN LOOP
 counter = 0
 while True:
