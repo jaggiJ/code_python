@@ -4,23 +4,28 @@
 
 # Checks and logs server response status 
 
-# USE:  'python[3] res-logger.py <server-address> <request time seconds>'
-#   for testing:
-#       'python3 res-logger.py https://google.com 6'
-#       'tail -F status.log'
-#   example for permanent run in background:
-#       'python3 res-logger.py https://google.com 300 &'
-
 import requests, sys
 import time, datetime
 
+########################################################################
+# PRINTS HELP IF REQUESTED by --help argument and such
+
+helpRequest = ['--help', '-h', 'help', 'h', '-help']
+if len(sys.argv) > 1 and sys.argv[1] in helpRequest:
+    print('''
+# USE:  'python[3] res-logger.py <server-address> <request time seconds>'
+#   for testing:
+#       'python3 res-logger.py https://web-address.com 6 &'
+#       'tail -F status.log'
+#   example for permanent run in background:
+#       'python3 res-logger.py https://your-web-server.com 300 &' ''')
+    sys.exit()
+
 #######################################################################
-# SERVER AND REQUESTS TIME CONFIGURATION
-# COMMAND LINE ARGUMENTS, IF PROVIDED OVERWRITE THIS
-# server = 'https://server.address.here.com'
-# requestFrequency = 300
-server = 'https://wypas.online'
-requestFrequency = 6
+# USER EDITABLE
+server = 'https://server.address.here.com'
+requestFrequency = 300 #how often server is checked
+lessFrequent = 6 #requestFrequency x lessFrequent=log entry interval(sec)
 
 ########################################################################
 #FUNCTIONS
@@ -41,7 +46,6 @@ def estimate_status():
 
     if isinstance(req, str):
         code = 'no connection to server'
-        # code = 201 #debug
     else:
         code = req.status_code
     return req, code
@@ -50,7 +54,7 @@ def help_text():
     '''Prints out help to user.'''
     print(
 'Add one or two arguments:\n1. server address starting with http\
-or https,\n2. time in seconds (default is 300), e.g\n"python3 \
+ or https,\n2. time in seconds (default is 300), e.g\n"python3 \
 res-logger.py https://google.com 6"')
     sys.exit()
 
@@ -74,7 +78,7 @@ elif not commandLineArgs and server == 'https://server.address.here.com':
 ###############################################################################
 #OTHER VARIABLES
 req, code = estimate_status()
-lessFrequent = 6
+
 
 ###############################################################
 append_status()
