@@ -4,15 +4,17 @@
 Checks server response status each 5min by default and logs response<br>
 code into file, except when its same. Then logs less frequently.<br>
 <hr>
+Dependency: requests<br>
+<hr>
 #Execution:<br>
 syntax 'python[3] res-logger.py [server_address] [seconds]'<br>
 testing: <br>
-<code>'python3 res-logger.py https://web-address.com 6 &'<br>
-'tail -F status.log'</code><br>
+<code>'python3 res-logger.py https://web-address.com 6 &'</code><br>
+<code>'tail -F status.log'</code><br>
 typical run: <br>
 <code>'python3 res-logger.py https://your-web-server.com 300 &'</code><br>
 <hr>
-## EXAMPLE OF LOG FILE ENTRIES FROM 'testing' example<br><br>
+## EXAMPLE OF LOG FILE<br><br>
 2021-06-02 17:49:13 status code: 201 <br>
 2021-06-02 17:49:19 status code: 201<br>
 2021-06-02 17:49:25 status code: 201<br>
